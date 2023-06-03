@@ -1,0 +1,50 @@
+version: '3.7'
+volumes:
+  data:
+services:
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: myapp
+    restart: always
+    links:
+      - "db"
+    depends_on:
+      - "db"
+#    networks:
+#      - network
+    
+    #    ipv4_address: 172.20.0.3
+    ports:
+      - "5771:5771"
+
+  db:
+    #image: mariadb:10.4
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ubx1234
+      MYSQL_DATABASE: proyecto_final
+      MYSQL_USER: ubxmnh
+      MYSQL_PASSWORD: ubxmnh
+    volumes:
+      - data:/var/lib/mysql
+      - ./db/:/docker-entrypoint-initdb.d/:ro
+#    networks:
+#      - network
+    
+    #    ipv4_address: 172.20.0.2
+    ports:
+      - "3306:3306"
+
+#networks:
+#  network:
+#    driver: bridge
+
+#    ipam:
+#      config:
+#        -subnet: 172.20.0.0/16
+#         gateway: 172.20.0.1
